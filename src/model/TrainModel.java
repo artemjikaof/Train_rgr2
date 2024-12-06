@@ -45,7 +45,7 @@ public class TrainModel {
         if (trainX > 800) trainX = -200;
     }
 
-    private void updateState() {
+    private void updateState()  { // сделать чтобы работало через наблюдатель, т.е нужен другой класс для этого и другой для отрисовки поезда
         moveTrain();
         int trainNose = trainX + 200;
         int trainEnd = trainX;
