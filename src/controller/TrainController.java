@@ -1,26 +1,19 @@
 package controller;
 
 import model.TrainModel;
-import view.TrainView;
 
 import javax.swing.Timer;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class TrainController {
-    private TrainModel model;
-    private TrainView view;
+    private final TrainModel model;
 
-    public TrainController(TrainModel model, TrainView view) {
+    public TrainController(TrainModel model) {
         this.model = model;
-        this.view = view;
+        startSimulation();
+    }
 
-        Timer timer = new Timer(30, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                model.moveTrain();
-            }
-        });
+    private void startSimulation() {
+        Timer timer = new Timer(500, e -> model.updateState()); // Обновляем каждые 500 мс
         timer.start();
     }
 }

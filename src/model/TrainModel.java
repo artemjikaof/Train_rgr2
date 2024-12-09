@@ -1,27 +1,56 @@
 package model;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Observable;
 
-public class TrainModel {
-    public enum State {WHITE, RED}
+public class TrainModel extends Observable {
+    private int trainX = 0; // Координата X поезда
+    private final int speed = 20; // Скорость поезда
+    private boolean whiteOn = true; // Состояние светло-голубого сигнала
+    private boolean redLeftOn = false; // Состояние левого красного сигнала
+    private boolean redRightOn = false; // Состояние правого красного сигнала
+    private boolean toggleRed = true; // Переключатель для поочередного мигания красных огней
 
-    private State state = State.WHITE;
-    private boolean redToggle = false;
-    private boolean whiteToggle = true;
-    private int trainX = 0;
-    private final int speed = 3;
+    private final int redMarker = 250; // Положение красного прямоугольника
+    private final int crossingStart = 350; // Начало переезда
+    private final int crossingEnd = 450; // Конец переезда
+    private final int trainLength = 200; // Длина поезда
 
-    private Timer timer;
+    public void updateState() {
+        int trainNose = trainX + trainLength; // Нос поезда
+        int trainEnd = trainX; // Задняя часть поезда
 
-    public TrainModel() {
-        timer = new Timer(true);
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                updateState();
+        // Логика смены сигналов
+        if (trainNose < redMarker) {
+            // Поезд не пересек красный прямоугольник
+            whiteOn = !whiteOn; // Светло-голубой мигает
+            redLeftOn = false;
+            redRightOn = false;
+        } else if (trainNose >= redMarker && trainEnd <= crossingEnd) {
+            // Поезд между маркером и переездом
+            whiteOn = false; // Светло-голубой выключен
+            if (toggleRed) {
+                redLeftOn = true;
+                redRightOn = false;
+            } else {
+                redLeftOn = false;
+                redRightOn = true;
             }
-        }, 0, 500);
+            toggleRed = !toggleRed; // Переключаем состояние
+        } else if (trainEnd > crossingEnd) {
+            // Поезд полностью покинул переезд
+            whiteOn = !whiteOn; // Светло-голубой мигает
+            redLeftOn = false;
+            redRightOn = false;
+        }
+
+        // Обновляем положение поезда
+        trainX += speed;
+        if (trainX > 800) {
+            trainX = -trainLength; // Возвращаем поезд в начало
+        }
+
+        setChanged();
+        notifyObservers();
     }
 
     public int getTrainX() {
@@ -29,39 +58,14 @@ public class TrainModel {
     }
 
     public boolean isWhiteOn() {
-        return state == State.WHITE && whiteToggle;
+        return whiteOn;
     }
 
     public boolean isRedLeftOn() {
-        return state == State.RED && redToggle;
+        return redLeftOn;
     }
 
     public boolean isRedRightOn() {
-        return state == State.RED && !redToggle;
-    }
-
-    public void moveTrain() {
-        trainX += speed;
-        if (trainX > 800) trainX = -200;
-    }
-
-    private void updateState() {
-        moveTrain();
-        int trainNose = trainX + 200;
-        int trainEnd = trainX;
-
-        if (trainNose < 250) {
-            state = State.WHITE;
-        } else if (trainNose >= 250 && trainEnd <= 450) {
-            state = State.RED;
-        } else if (trainEnd > 450) {
-            state = State.WHITE;
-        }
-
-        if (state == State.RED) {
-            redToggle = !redToggle;
-        } else if (state == State.WHITE) {
-            whiteToggle = !whiteToggle;
-        }
+        return redRightOn;
     }
 }
