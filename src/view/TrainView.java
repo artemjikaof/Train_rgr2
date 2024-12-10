@@ -25,26 +25,29 @@ public class TrainView extends JPanel implements Observer {
     }
 
     private void drawRoad(Graphics g) {
+        // Дорога
         g.setColor(Color.LIGHT_GRAY);
         g.fillRect(0, 325, 800, 50);
 
+        //Переезд
         g.setColor(Color.BLACK);
         g.fillRect(350, 325, 100, 50);
 
+        // Черта означающая контрольное расстояние до переезда
         g.setColor(Color.RED);
         g.fillRect(250, 325, 10, 50);
     }
 
     private void drawTrafficLight(Graphics g) {
-        // Рисуем черный корпус светофора
+        // корпус светофора
         g.setColor(Color.BLACK);
         g.fillRect(330, 80, 150, 150);
 
-        // Рисуем светло-голубой сигнал
+        // светло-голубой сигнал
         g.setColor(model.isWhiteOn() ? Color.CYAN : Color.GRAY);
         g.fillOval(380, 100, 50, 50);
 
-        // Рисуем красные сигналы
+        // красные сигналы
         g.setColor(model.isRedLeftOn() ? Color.RED : Color.GRAY);
         g.fillOval(350, 160, 50, 50); // Левый красный
 
@@ -52,6 +55,7 @@ public class TrainView extends JPanel implements Observer {
         g.fillOval(410, 160, 50, 50); // Правый красный
     }
 
+    // Поезд
     private void drawTrain(Graphics g) {
         g.setColor(Color.BLUE);
         g.fillRect(model.getTrainX(), 300, 200, 50);

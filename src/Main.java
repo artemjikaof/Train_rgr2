@@ -6,16 +6,16 @@ import javax.swing.JFrame;
 
 public class Main {
     public static void main(String[] args) {
-        // Создаем модель
+        // модель
         TrainModel model = new TrainModel();
 
-        // Создаем представление
+        // отрисовка
         TrainView view = new TrainView(model);
 
-        // Создаем контроллер
+        // контроллер
         TrainController controller = new TrainController(model);
 
-        // Настраиваем окно
+        // Окно с названием
         JFrame frame = new JFrame("Train-rgr");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
